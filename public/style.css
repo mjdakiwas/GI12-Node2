@@ -1,0 +1,127 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+	padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    padding: 1rem;
+    background-color: #082032;
+    margin-bottom: 2rem;
+}
+
+p {
+    color: white;
+}
+
+form {
+    display: flex;
+    column-gap: .75rem;
+}
+
+input {
+    border: solid 1px #ccc;
+    padding: 1rem;
+    border-radius: 6px;
+    flex: 1 0 auto;
+}
+
+button {
+    cursor: pointer;
+    min-width: 40px;
+    max-width: 40px;
+    background-color: transparent;
+    border: none;
+}
+
+.material-symbols-outlined {
+    color: white;
+}
+
+hr {
+    margin: 1rem 0;
+}
+
+.results-title {
+    margin: 1rem 2rem;
+    font-size: 2rem;
+    color: #FF4C29;
+}
+
+.movies-container {
+    display: flex;
+    flex-direction: column;
+    /* justify-content: center;
+    align-items: center; */
+    row-gap: 1rem;
+}
+
+.movie-card {
+    display: flex;
+    flex-direction: row;
+    /* justify-content: center; */
+    align-items: center;
+    /* border: solid 1px #ccc; */
+    width: 100%;
+    flex: 1 0 auto;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #334756;
+    filter: brightness(100%);
+    transition: filter 0.3s ease;
+}
+
+.movie-card:hover {
+    filter: brightness(85%);
+}
+
+.movie-card__img-container {
+    max-width: 154px;
+    max-height: 231px;
+}
+
+.movie-card__poster-img {
+    width: 154px;
+    height: 231px;
+}
+
+.movie-card__info-container {
+    display: flex;
+    flex-direction: column;
+    row-gap: 1rem;
+    /* justify-content: center;
+    align-items: center; */
+    text-align: left;
+    margin: 1rem;
+    white-space: pre-line;
+}
+
+.movie-card__title {
+    font-size: .95rem;
+    font-weight: 600;
+}
+
+.movie-card__overview {
+    font-size: .85rem;
+}
+
+@media screen and (min-width: 576px) {
+    
+}
+
+@media screen and (min-width: 768px) {
+    
+}
+
+@media screen and (min-width: 992px) {
+    
+}
+
+@media screen and (min-width: 1200px) {
+    
+}
+
+@media screen and (min-width: 1400px) {
+    
+}
