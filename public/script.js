@@ -1,7 +1,7 @@
 const form = document.querySelector('form');
 const search = document.querySelector('input');
 const moviesContainer = document.getElementById('movies-container');
-const message = document.querySelector('p');
+const message = document.getElementById('message');
 
 // import { join } from 'path'; // can't use import statement outside a module
 
@@ -16,6 +16,7 @@ form.addEventListener('submit', (e) => {
     fetch(`/movies?search=${movieQuery}`).then((res) => {
         // How am I able to fetch from a route in my client-side js?
         res.json().then((movies) => {
+            console.log(movies.length);
             if (movies.length === 0) {
                 message.textContent = 'No movies found.';
             } else {
