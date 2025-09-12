@@ -1,5 +1,8 @@
+// const movies = require('movies.js');
+
 const config = (callback) => {
     const url = 'https://api.themoviedb.org/3/configuration';
+
     const options = {
         method: 'GET',
         headers: {

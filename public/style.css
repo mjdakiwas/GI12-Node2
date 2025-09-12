@@ -49,7 +49,7 @@ hr {
     color: #FF4C29;
 }
 
-.movies-container {
+#movies-container {
     display: flex;
     flex-direction: column;
     /* justify-content: center;

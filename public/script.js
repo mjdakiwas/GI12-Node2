@@ -1,6 +1,6 @@
 const form = document.querySelector('form');
 const search = document.querySelector('input');
-const moviesContainer = document.querySelector('section');
+const moviesContainer = document.getElementById('movies-container');
 const message = document.querySelector('p');
 
 // import { join } from 'path'; // can't use import statement outside a module

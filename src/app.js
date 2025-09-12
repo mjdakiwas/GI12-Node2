@@ -76,27 +76,24 @@ app.get('/movies', (req, res) => {
     // route storing response from API
     if (!req.query.search) return res.send({ error: "You must provide a movie name" });
 
-    config((error, img_base_url) => {
+    config((error, img_base_url = '') => {
         if (error) return res.send({ error: 'Error in config' });
 
-        movies(req.query.search, (error, data = {}) => {
+        movies(req.query.search, (error, details = {}) => {
             if (error) return res.send({ error: 'Error in movies' });
 
-            const sortedByPopularity = data.results.sort((a, b) => b.popularity - a.popularity);
+            console.log(details);
 
-            const filteredProperties = sortedByPopularity.map(e => (
-                // REMEMBER: .map() allows to make a new array w/ new objects (i.e., mutating original objects in the array)
-                {
-                    id: e.id,
-                    title: e.title,
-                    overview: e.overview,
-                    poster_path: `${img_base_url}${e.poster_path}`
-                }
-            ));
+            const movieDetails = details.map(e => {
+                const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
+                return newE;
+            })
 
-            res.send(filteredProperties);
-        });
-    })
+            // console.log(movieDetails);
+
+            res.send(movieDetails);
+        })
+    });
 })
 
 app.get('/movies')
