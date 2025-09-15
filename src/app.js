@@ -54,6 +54,13 @@ Dynamic Site (w/ user input)
 [] Once movie card is clicked, redirect user to corresponding route
 [] Fetch response from server and render info of selected movie in the route
 [] Display recommendated related movies pertaining to the selected movie (https://api.themoviedb.org/3/movie/{movie_id}/recommendations)
+
++ Result Page
+[✅] Originally wasn't an addition I want, but I re-route to another html file after search to display searches
+
++ DEBUG
+[] Display no movies found message when no movie is returned
+[] Display loading... while API render
 */
 
 const path = require('path');
@@ -70,12 +77,18 @@ app.use(express.static(path.join(__dirname, '../public'))); // express.static is
 
 app.get('', (req, res) => {
     console.log('Server connected to the port');
-    res.render('index');
-})
+    res.sendFile(path.join(__dirname, '../public/index'));
+});
+
+app.get('/search/:movie', (req, res) => {
+    console.log('Redirected to results page');
+    res.sendFile(path.join(__dirname, '../public/html/search.html'));
+});
 
 app.get('/movies', (req, res) => {
     // route storing response from API
-    if (!req.query.search) return res.send({ error: 'You must provide a movie name' });
+    if (!req.query.search)
+        return res.send({ error: 'You must provide a movie name' });
 
     images((error, img_base_url = '') => {
         if (error) return res.send({ error: 'Error in config' });
@@ -83,22 +96,25 @@ app.get('/movies', (req, res) => {
         movies(req.query.search, (error, details = {}) => {
             if (error) return res.send({ error: 'Error in movies' });
 
-            const movieDetails = details.map(e => {
-                const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
+            const movieDetails = details.map((e) => {
+                const newE = Object.assign(e, {
+                    poster_path: `${img_base_url}${e.poster_path}`,
+                });
                 return newE;
-            })
+            });
 
             res.send(movieDetails);
-        })
+        });
     });
-})
+});
 
 app.get('/movies/:category', (req, res) => {
     // This route will match both /categories/popular and /categories/popular/
     // If adding '?' after category, it makes the 'category' parameter optional, effectively matching /categories as well
     // Can use a regular expression: '/categories/:id\\/?'.This explicitly matches with or without a trailing slash for a parameter
 
-    if (!req.params.category) return res.send({ error: 'You must provide a category name' });
+    if (!req.params.category)
+        return res.send({ error: 'You must provide a category name' });
 
     // categories.nowPlaying(11, (error, nowPlayingMovies) => {
     //     if (error) return res.send({ error: 'Error in nowPlaying ' });
@@ -111,22 +127,31 @@ app.get('/movies/:category', (req, res) => {
         categories(req.params.category, 11, (error, data = {}) => {
             if (error) return res.send({ error: 'Error in categories' });
 
-            const validCategories = ['now_playing', 'popular', 'top_rated', 'upcoming'];
+            const validCategories = [
+                'now_playing',
+                'popular',
+                'top_rated',
+                'upcoming',
+            ];
             if (!validCategories.includes(req.params.category)) {
-                return res.send({ error: 'Invalid category. Must be: now_playing, popular, top_rated, upcoming' })
+                return res.send({
+                    error: 'Invalid category. Must be: now_playing, popular, top_rated, upcoming',
+                });
             }
 
-            const movieDetails = data.map(e => {
-                const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
+            const movieDetails = data.map((e) => {
+                const newE = Object.assign(e, {
+                    poster_path: `${img_base_url}${e.poster_path}`,
+                });
                 return newE;
-            })
+            });
 
             res.send(movieDetails);
-        })
-    })
-})
+        });
+    });
+});
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
-})
+});
 // REMEMBER: To start server, run `node app.js` in the terminal. To stop, CTRL + C. OR! Use nodemon npm package to update server w/ every changes

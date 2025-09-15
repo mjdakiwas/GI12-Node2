@@ -1,7 +1,7 @@
 * {
     box-sizing: border-box;
     margin: 0;
-	padding: 0;
+    padding: 0;
     font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -11,13 +11,20 @@ body {
     margin-bottom: 2rem;
 }
 
+header {
+    display: flex;
+    width: 100%;
+    column-gap: 0.75rem;
+}
+
 p {
     color: white;
 }
 
 form {
     display: flex;
-    column-gap: .75rem;
+    column-gap: 0.75rem;
+    width: 100%;
 }
 
 input {
@@ -43,8 +50,9 @@ hr {
     margin: 1rem 0;
 }
 
-h1, h2 {
-    color: #FF4C29;
+h1,
+h2 {
+    color: #ff4c29;
 }
 
 h1 {
@@ -60,7 +68,10 @@ h2:hover {
     text-decoration: underline;
 }
 
-#now-playing__container, #popular__container, #top-rated__container, #upcoming__container {
+#now-playing__container,
+#popular__container,
+#top-rated__container,
+#upcoming__container {
     display: flex;
     flex-direction: row;
     overflow-y: auto;
@@ -102,13 +113,13 @@ h2:hover {
     /* row-gap: 1rem; */
     align-items: center;
     justify-items: center;
-    padding: .4rem;
+    padding: 0.4rem;
     height: 100%;
 }
 
 .movie-card__title--category {
-    padding: .5rem 0;
-    font-size: .85rem;
+    padding: 0.5rem 0;
+    font-size: 0.85rem;
     font-weight: 600;
     text-align: center;
 }
@@ -119,7 +130,7 @@ h2:hover {
     flex-wrap: nowrap;
     align-items: center;
     justify-content: center;
-    column-gap: .5rem;
+    column-gap: 0.5rem;
 }
 
 .rating--category .material-symbols-outlined {
@@ -127,7 +138,7 @@ h2:hover {
 }
 
 .genres--category {
-    font-size: .75rem;
+    font-size: 0.75rem;
     text-align: center;
     font-style: italic;
 }
@@ -135,7 +146,11 @@ h2:hover {
 .results-title {
     margin: 1rem 2rem;
     font-size: 2rem;
-    color: #FF4C29;
+    color: #ff4c29;
+}
+
+#movies__container-message {
+    color: white;
 }
 
 #movies__container {
@@ -187,30 +202,25 @@ h2:hover {
 }
 
 .movie-card__title {
-    font-size: .95rem;
+    font-size: 0.95rem;
     font-weight: 600;
 }
 
 .movie-card__overview {
-    font-size: .85rem;
+    font-size: 0.85rem;
 }
 
 @media screen and (min-width: 576px) {
-    
 }
 
 @media screen and (min-width: 768px) {
-    
 }
 
 @media screen and (min-width: 992px) {
-    
 }
 
 @media screen and (min-width: 1200px) {
-    
 }
 
 @media screen and (min-width: 1400px) {
-    
 }
