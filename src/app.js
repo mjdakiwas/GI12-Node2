@@ -41,12 +41,12 @@ Dynamic Site (w/ user input)
 [] Filter through search response based on properties above
 
 + Categorizing
-[] In separate files under 'utils', make function that fetches movies based on: 
+[✅] In separate files under 'utils', make function that fetches movies based on: 
     - 'Now Playing': https://api.themoviedb.org/3/movie/now_playing
     - 'Popular': https://api.themoviedb.org/3/movie/popular
     - 'Top Rated': https://api.themoviedb.org/3/movie/top_rated
     - 'Upcoming': https://api.themoviedb.org/3/movie/upcoming
-[] In root route, display responses from these functions by default
+[✅] In root route, display responses from these functions by default
 [] Make each as a clickable option to expand
 
 + Interaction
@@ -58,8 +58,9 @@ Dynamic Site (w/ user input)
 
 const path = require('path');
 const express = require('express');
-const config = require('./utils/config.js');
+const images = require('./utils/config.js');
 const movies = require('./utils/movies.js');
+const categories = require('./utils/categories.js');
 
 const app = express();
 const port = process.env.PORT || 3000; // using process.env.PORT in case changing which port a deployment server should listen to
@@ -74,29 +75,56 @@ app.get('', (req, res) => {
 
 app.get('/movies', (req, res) => {
     // route storing response from API
-    if (!req.query.search) return res.send({ error: "You must provide a movie name" });
+    if (!req.query.search) return res.send({ error: 'You must provide a movie name' });
 
-    config((error, img_base_url = '') => {
+    images((error, img_base_url = '') => {
         if (error) return res.send({ error: 'Error in config' });
 
         movies(req.query.search, (error, details = {}) => {
             if (error) return res.send({ error: 'Error in movies' });
-
-            console.log(details);
 
             const movieDetails = details.map(e => {
                 const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
                 return newE;
             })
 
-            // console.log(movieDetails);
-
             res.send(movieDetails);
         })
     });
 })
 
-app.get('/movies')
+app.get('/movies/:category', (req, res) => {
+    // This route will match both /categories/popular and /categories/popular/
+    // If adding '?' after category, it makes the 'category' parameter optional, effectively matching /categories as well
+    // Can use a regular expression: '/categories/:id\\/?'.This explicitly matches with or without a trailing slash for a parameter
+
+    if (!req.params.category) return res.send({ error: 'You must provide a category name' });
+
+    // categories.nowPlaying(11, (error, nowPlayingMovies) => {
+    //     if (error) return res.send({ error: 'Error in nowPlaying ' });
+
+    //     res.send({ now_playing: [nowPlayingMovies] });
+    // })
+
+    images((error, img_base_url = '') => {
+        if (error) return res.send({ error: 'Error in config' });
+        categories(req.params.category, 11, (error, data = {}) => {
+            if (error) return res.send({ error: 'Error in categories' });
+
+            const validCategories = ['now_playing', 'popular', 'top_rated', 'upcoming'];
+            if (!validCategories.includes(req.params.category)) {
+                return res.send({ error: 'Invalid category. Must be: now_playing, popular, top_rated, upcoming' })
+            }
+
+            const movieDetails = data.map(e => {
+                const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
+                return newE;
+            })
+
+            res.send(movieDetails);
+        })
+    })
+})
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}/`);
