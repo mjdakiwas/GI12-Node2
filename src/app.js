@@ -85,25 +85,47 @@ app.get('/search/:movie', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/html/search.html'));
 });
 
+const toPosInt = (value, defaultValue) => {
+    return parseInt(value) > 0 ? value : defaultValue;
+};
+
 app.get('/movies', (req, res) => {
     // route storing response from API
     if (!req.query.search)
         return res.send({ error: 'You must provide a movie name' });
 
+    // Pagenation
+    // 1. Get param for page and limit
+    // 2. Determine how many movies returned
+    // 3. Determine how many pages by dividing returned / limit
+    // 4. In client-side JS, implement control
+
+    // NICE-TO-HAVE: Implement client requested limit
+    const page = toPosInt(req.query.page, 1);
+    // const limit = toPosInt(req.query.limit, 10);
+
     images((error, img_base_url = '') => {
         if (error) return res.send({ error: 'Error in config' });
 
-        movies(req.query.search, (error, details = {}) => {
+        movies(req.query.search, req.query.page, (error, results = {}) => {
             if (error) return res.send({ error: 'Error in movies' });
 
-            const movieDetails = details.map((e) => {
+            results.movie_details = results.movie_details.map((e) => {
                 const newE = Object.assign(e, {
                     poster_path: `${img_base_url}${e.poster_path}`,
                 });
                 return newE;
             });
 
-            res.send(movieDetails);
+            // const totalPages = Math.ceil(results.total_results / limit);
+            // const data = {
+            //     limit,
+            //     page: page,
+            //     total_pages: totalPages,
+            //     ...results,
+            // };
+
+            res.send(results);
         });
     });
 });

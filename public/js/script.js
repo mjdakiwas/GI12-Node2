@@ -7,7 +7,9 @@ const upcomingContainer = document.getElementById('upcoming__container');
 
 const form = document.querySelector('form');
 const search = document.querySelector('input');
+
 const moviesContainer = document.getElementById('movies__container');
+const moviesContainerTtl = document.getElementById('results-title');
 const moviesContainerMsg = document.getElementById('movies__container-message');
 
 // import { join } from 'path'; // NOTE: can't use import statement outside a module
@@ -21,16 +23,6 @@ form.addEventListener('submit', (e) => {
     const movieQuery = search.value;
 
     window.location.href = `/search/${movieQuery}`;
-
-    document.querySelector('h1').style.display = 'none';
-    document.querySelectorAll('h2').forEach((e) => (e.style.display = 'none'));
-    // nowPlayingContainer.style.display = 'none';
-    // popularContainer.style.display = 'none';
-    // topRatedContainer.style.display = 'none';
-    // upcomingContainer.style.display = 'none';
-
-    moviesContainerMsg.textContent = 'Loading...';
-    moviesContainer.innerHTML = '';
 });
 
 function truncateWords(text, limit) {
@@ -42,21 +34,25 @@ function truncateWords(text, limit) {
 }
 
 const populateMovieResults = (movies, container) => {
-    movies.forEach((movie) => {
+    moviesContainer.innerHTML = '';
+
+    movies.map((movie) => {
         container.innerHTML += `<div class="movie-card">
                                                     <div class="movie-card__img-container">
-                                                        <img src="${
+                                                        <img src="${escapeHTML(
                                                             movie.poster_path
-                                                        }" alt="${
+                                                        )}" alt="${escapeHTML(
             movie.title
-        } Poster" class="movie-card__poster-img">
+        )} Poster" class="movie-card__poster-img">
                                                     </div>
                                                     <div class="movie-card__info-container">
-                                                        <p class="movie-card__title">${
+                                                        <p class="movie-card__title">${escapeHTML(
                                                             movie.title
-                                                        }</p>
+                                                        )}</p>
                                                         <p class="movie-card__overview">${truncateWords(
-                                                            movie.overview,
+                                                            escapeHTML(
+                                                                movie.overview
+                                                            ),
                                                             25
                                                         )}</p>
                                                     </div>
@@ -65,7 +61,7 @@ const populateMovieResults = (movies, container) => {
 };
 
 const populateMovieCategories = (movies, container) => {
-    movies.forEach((movie) => {
+    movies.map((movie) => {
         container.innerHTML += `<div class="movie-card--category">
                                                     <div class="movie-card__img-container--category">
                                                         <img src="${
@@ -88,3 +84,12 @@ const populateMovieCategories = (movies, container) => {
                                                 </div>`;
     });
 };
+
+function escapeHTML(str) {
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+}

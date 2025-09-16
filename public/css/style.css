@@ -97,13 +97,15 @@ h2:hover {
 }
 
 .movie-card__img-container--category {
+    width: 185px;
+    height: 278px;
     max-width: 185px;
     max-height: 278px;
 }
 
 .movie-card__poster-img--category {
-    width: 154px;
-    height: 231px;
+    width: 100%;
+    height: 100%;
 }
 
 .movie-card__info-container--category {
@@ -149,6 +151,36 @@ h2:hover {
     color: #ff4c29;
 }
 
+#page-ctrl {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    column-gap: 1rem;
+    padding: 2rem;
+    width: 100%;
+    align-items: center;
+}
+
+#prev-btn,
+#next-btn {
+    flex: 1 0 6rem;
+    min-width: 6rem;
+    height: 3rem;
+    background-color: white;
+    font-size: 0.85rem;
+    border-radius: 0.35rem;
+}
+
+#prev-btn:hover,
+#next-btn:hover {
+    background-color: #ddd;
+}
+
+#page-info {
+    flex: 1 0 auto;
+    text-align: center;
+}
+
 #movies__container-message {
     color: white;
 }
@@ -181,13 +213,15 @@ h2:hover {
 }
 
 .movie-card__img-container {
+    min-width: 154px;
+    min-height: 231px;
     max-width: 154px;
     max-height: 231px;
 }
 
 .movie-card__poster-img {
-    width: 154px;
-    height: 231px;
+    width: 100%;
+    height: 100%;
 }
 
 .movie-card__info-container {
