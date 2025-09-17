@@ -1,25 +1,26 @@
-// 1. Get movie id
-// 2. Use movie id to get movie details
-// 3. Get base url + width for img and join w/ poster_path under details
-
 const movieDetails = require('./moviedetails.js');
-
-const options = {
-    method: 'GET',
-    headers: {
-        accept: 'application/json',
-        Authorization:
-            'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNThjMTk5YWE4ZTNmM2QyZjZjMTA3ZTAzNWIyOGYzZiIsIm5iZiI6MTc1NzM1NDkyNi45OTYsInN1YiI6IjY4YmYxYmFlMTU4ZTU2NjkyYTliY2FmOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QUQEB9rKOhOYNUVHVc9Z_PdHbMjXZ43u5ktgFq8DHEU',
-    },
-};
+require('dotenv').config();
+const TOKEN = process.env.TOKEN;
 
 // requesting movies' ids in order to use for getMovieDetails(), which gets specific details about that movie
 const movies = function (movie, page, callback) {
     const url = `https://api.themoviedb.org/3/search/movie?query=${movie}&page=${page}`;
 
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: TOKEN,
+        },
+    };
+
     fetch(url, options)
         .then((res) => res.json())
         .then((json) => {
+            // 1. Get movie id
+            // 2. Use movie id to get movie details
+            // 3. Get base url + width for img and join w/ poster_path under details
+
             const sortedByPopularity = json.results.sort(
                 (a, b) => b.popularity - a.popularity
             );

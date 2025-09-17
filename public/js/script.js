@@ -12,6 +12,15 @@ const moviesContainer = document.getElementById('movies__container');
 const moviesContainerTtl = document.getElementById('results-title');
 const moviesContainerMsg = document.getElementById('movies__container-message');
 
+const prevBtn = document.getElementById('prev-btn');
+const nextBtn = document.getElementById('next-btn');
+const pageInfo = document.getElementById('page-info');
+
+const currentState = {
+    page: 1,
+    totalPages: 1,
+};
+
 // import { join } from 'path'; // NOTE: can't use import statement outside a module
 
 homeBtn.addEventListener('click', () => {
@@ -25,6 +34,14 @@ form.addEventListener('submit', (e) => {
     window.location.href = `/search/${movieQuery}`;
 });
 
+const fetchData = (movieQuery, page = 1) => {
+    return fetch(`/movies?search=${movieQuery}&page=${page}`)
+        .then((res) => {
+            return res.json();
+        })
+        .catch((err) => console.log(err));
+};
+
 function truncateWords(text, limit) {
     const words = text.trim().split(/\s+/);
     if (words.length > limit) {
@@ -35,7 +52,6 @@ function truncateWords(text, limit) {
 
 const populateMovieResults = (movies, container) => {
     moviesContainer.innerHTML = '';
-
     movies.map((movie) => {
         container.innerHTML += `<div class="movie-card">
                                                     <div class="movie-card__img-container">
@@ -85,11 +101,30 @@ const populateMovieCategories = (movies, container) => {
     });
 };
 
-function escapeHTML(str) {
+const populateCard = (movie) => {
+    return `<div class="movie-card">
+                <div class="movie-card__img-container">
+                    <img src="${escapeHTML(
+                        movie.poster_path
+                    )}" alt="${escapeHTML(
+        movie.title
+    )} Poster" class="movie-card__poster-img">
+                </div>
+                <div class="movie-card__info-container">
+                    <p class="movie-card__title">${escapeHTML(movie.title)}</p>
+                    <p class="movie-card__overview">${truncateWords(
+                        escapeHTML(movie.overview),
+                        25
+                    )}</p>
+                </div>
+            </div>`;
+};
+
+const escapeHTML = (str) => {
     return str
         .replace(/&/g, '&amp;')
         .replace(/"/g, '&quot;')
         .replace(/'/g, '&#039;')
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;');
-}
+};

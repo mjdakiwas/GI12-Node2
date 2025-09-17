@@ -1,3 +1,6 @@
+require('dotenv').config();
+const TOKEN = process.env.TOKEN;
+
 const movieDetails = (movieId) => {
     const url = `https://api.themoviedb.org/3/movie/${movieId}`;
 
@@ -5,8 +8,7 @@ const movieDetails = (movieId) => {
         method: 'GET',
         headers: {
             accept: 'application/json',
-            Authorization:
-                'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNThjMTk5YWE4ZTNmM2QyZjZjMTA3ZTAzNWIyOGYzZiIsIm5iZiI6MTc1NzM1NDkyNi45OTYsInN1YiI6IjY4YmYxYmFlMTU4ZTU2NjkyYTliY2FmOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QUQEB9rKOhOYNUVHVc9Z_PdHbMjXZ43u5ktgFq8DHEU',
+            Authorization: TOKEN,
         },
     };
 

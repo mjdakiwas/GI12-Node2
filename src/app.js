@@ -22,14 +22,21 @@ Dynamic Site (w/ user input)
 [✅] Reorganize response array based on popularity
 
 (NICE-TO-HAVES)
-+ Pagenation--Render up to 10 movies of results in a page
-[] If response contains more than 10 movies, cap the movies rendered to only be 10 movies
-[] Display indicators where 'dots' can be clicked and there are arrows that can be clicked
-[] Once a dot is clicked, render the 10 movies corresponding to that dot
-[] Once an arrow is clicked, render next or previous 10 movies
++ Pagenation
+[✅] Cap the movies rendered into pages
+[✅] Display buttons/arrows for users to control switching between pages
+[✅] Once a button is clicked, render next or previous page
+[] Display indicators where 'dots' can be clicked
+[] Once a dot is clicked, render the page corresponding to that dot
+[] Link buttons and dots
+
++ Sorting
+[] Provide user sort options (i.e., popularity (default), alphabetically)
+[] If alphabetically, re-render display alphabetically
+[] If popularity, re-render display popularity
 
 + Filtering
-[] In a separate file under 'utils', make a function that filters through search response based on:
+[] ProvideFilter through search response based on:
     - 'Release Date' 
     - 'Rating'
     - 'Number of Votes'
@@ -57,10 +64,14 @@ Dynamic Site (w/ user input)
 
 + Result Page
 [✅] Originally wasn't an addition I want, but I re-route to another html file after search to display searches
+[] In the movie card, add genre, rating, and option to expand overview to a certain extent (contain within movie card)
+[] If there's no image, render a placeholder image
 
 + DEBUG
 [] Display no movies found message when no movie is returned
-[] Display loading... while API render
+[✅] Display loading... while API render
+[✅] Make images of movie cards consistent even if there's none
+[] If there's no overview, render that there isn't one in the movie card
 */
 
 const path = require('path');
@@ -80,97 +91,93 @@ app.get('', (req, res) => {
     res.sendFile(path.join(__dirname, '../public/index'));
 });
 
-app.get('/search/:movie', (req, res) => {
+app.get('/search/:title', (req, res) => {
     console.log('Redirected to results page');
     res.sendFile(path.join(__dirname, '../public/html/search.html'));
+});
+
+app.get('/search/:title/:id', (req, res) => {
+    console.log('Redirected to results page');
+    res.sendFile(path.join(__dirname, '../public/html/movie.html'));
 });
 
 const toPosInt = (value, defaultValue) => {
     return parseInt(value) > 0 ? value : defaultValue;
 };
 
-app.get('/movies', (req, res) => {
+app.get('/movies{/:category}', (req, res) => {
     // route storing response from API
-    if (!req.query.search)
-        return res.send({ error: 'You must provide a movie name' });
+    // refer to https://github.com/pillarjs/path-to-regexp for how to structure routes
 
-    // Pagenation
-    // 1. Get param for page and limit
-    // 2. Determine how many movies returned
-    // 3. Determine how many pages by dividing returned / limit
-    // 4. In client-side JS, implement control
+    if (req.params.category) {
+        images((error, img_base_url = '') => {
+            if (error) return res.send({ error: 'Error in config' });
+            categories(req.params.category, 11, (error, data = {}) => {
+                if (error) return res.send({ error: 'Error in categories' });
 
-    // NICE-TO-HAVE: Implement client requested limit
-    const page = toPosInt(req.query.page, 1);
-    // const limit = toPosInt(req.query.limit, 10);
+                const validCategories = [
+                    'now_playing',
+                    'popular',
+                    'top_rated',
+                    'upcoming',
+                ];
+                if (!validCategories.includes(req.params.category)) {
+                    return res.send({
+                        error: 'Invalid category. Must be: now_playing, popular, top_rated, upcoming',
+                    });
+                }
 
-    images((error, img_base_url = '') => {
-        if (error) return res.send({ error: 'Error in config' });
-
-        movies(req.query.search, req.query.page, (error, results = {}) => {
-            if (error) return res.send({ error: 'Error in movies' });
-
-            results.movie_details = results.movie_details.map((e) => {
-                const newE = Object.assign(e, {
-                    poster_path: `${img_base_url}${e.poster_path}`,
+                const movieDetails = data.map((e) => {
+                    const newE = Object.assign(e, {
+                        poster_path: `${img_base_url}${e.poster_path}`,
+                    });
+                    return newE;
                 });
-                return newE;
+
+                return res.send(movieDetails);
             });
-
-            // const totalPages = Math.ceil(results.total_results / limit);
-            // const data = {
-            //     limit,
-            //     page: page,
-            //     total_pages: totalPages,
-            //     ...results,
-            // };
-
-            res.send(results);
         });
-    });
-});
+    }
 
-app.get('/movies/:category', (req, res) => {
-    // This route will match both /categories/popular and /categories/popular/
-    // If adding '?' after category, it makes the 'category' parameter optional, effectively matching /categories as well
-    // Can use a regular expression: '/categories/:id\\/?'.This explicitly matches with or without a trailing slash for a parameter
+    // if (!req.query.search)
+    //     return res.send({ error: 'You must provide a movie name' });
 
-    if (!req.params.category)
-        return res.send({ error: 'You must provide a category name' });
+    if (req.query.search) {
+        // Pagenation
+        // 1. Get param for page and limit
+        // 2. Determine how many movies returned
+        // 3. Determine how many pages by dividing returned / limit
+        // 4. In client-side JS, implement control
 
-    // categories.nowPlaying(11, (error, nowPlayingMovies) => {
-    //     if (error) return res.send({ error: 'Error in nowPlaying ' });
+        // NICE-TO-HAVE: Implement client requested limit
+        const page = toPosInt(req.query.page, 1);
+        // const limit = toPosInt(req.query.limit, 10);
 
-    //     res.send({ now_playing: [nowPlayingMovies] });
-    // })
+        images((error, img_base_url = '') => {
+            if (error) return res.send({ error: 'Error in config' });
 
-    images((error, img_base_url = '') => {
-        if (error) return res.send({ error: 'Error in config' });
-        categories(req.params.category, 11, (error, data = {}) => {
-            if (error) return res.send({ error: 'Error in categories' });
+            movies(req.query.search, req.query.page, (error, results = {}) => {
+                if (error) return res.send({ error: 'Error in movies' });
 
-            const validCategories = [
-                'now_playing',
-                'popular',
-                'top_rated',
-                'upcoming',
-            ];
-            if (!validCategories.includes(req.params.category)) {
-                return res.send({
-                    error: 'Invalid category. Must be: now_playing, popular, top_rated, upcoming',
+                results.movie_details = results.movie_details.map((e) => {
+                    const newE = Object.assign(e, {
+                        poster_path: `${img_base_url}${e.poster_path}`,
+                    });
+                    return newE;
                 });
-            }
 
-            const movieDetails = data.map((e) => {
-                const newE = Object.assign(e, {
-                    poster_path: `${img_base_url}${e.poster_path}`,
-                });
-                return newE;
+                // const totalPages = Math.ceil(results.total_results / limit);
+                // const data = {
+                //     limit,
+                //     page: page,
+                //     total_pages: totalPages,
+                //     ...results,
+                // };
+
+                res.send(results);
             });
-
-            res.send(movieDetails);
         });
-    });
+    }
 });
 
 app.listen(port, () => {

@@ -1,52 +1,46 @@
-// + Categorizing
-// [] In separate files under 'utils', make function that fetches movies based on: 
-//     - 'Now Playing': https://api.themoviedb.org/3/movie/now_playing
-//     - 'Popular': https://api.themoviedb.org/3/movie/popular
-//     - 'Top Rated': https://api.themoviedb.org/3/movie/top_rated
-//     - 'Upcoming': https://api.themoviedb.org/3/movie/upcoming
-// [] In root route, display responses from these functions by default
-// [] Make each as a clickable option to expand
-
 const movieDetails = require('./moviedetails.js');
-
-
-const options = {
-    method: 'GET',
-    headers: {
-        accept: 'application/json',
-        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIwNThjMTk5YWE4ZTNmM2QyZjZjMTA3ZTAzNWIyOGYzZiIsIm5iZiI6MTc1NzM1NDkyNi45OTYsInN1YiI6IjY4YmYxYmFlMTU4ZTU2NjkyYTliY2FmOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.QUQEB9rKOhOYNUVHVc9Z_PdHbMjXZ43u5ktgFq8DHEU'
-    }
-};
+require('dotenv').config();
+const TOKEN = process.env.TOKEN;
 
 const categories = (category, num, callback) => {
     const url = `https://api.themoviedb.org/3/movie/${category}?language=en-US&page=1`;
 
+    const options = {
+        method: 'GET',
+        headers: {
+            accept: 'application/json',
+            Authorization: TOKEN,
+        },
+    };
+
     fetch(url, options)
-        .then(res => res.json())
-        .then(json => {
+        .then((res) => res.json())
+        .then((json) => {
             const limitDisplay = json.results.slice(0, num);
 
-            const filteredIds = limitDisplay.map(e => (
-                { id: e.id }
-            ));
+            const filteredIds = limitDisplay.map((e) => ({ id: e.id }));
 
-            return Promise.all(filteredIds.map(e => {
-                return movieDetails(e.id)
-                    .then(details => {
-                        return {
-                            id: e.id,
-                            ...details
-                        }
-                    })
-                    .catch(err => { return { err: 'Error calling movieDetails' } })
-            }))
+            return Promise.all(
+                filteredIds.map((e) => {
+                    return movieDetails(e.id)
+                        .then((details) => {
+                            return {
+                                id: e.id,
+                                ...details,
+                            };
+                        })
+                        .catch((err) => {
+                            return { err: 'Error calling movieDetails' };
+                        });
+                })
+            );
         })
-        .then(fetchedData => {
-            console.log("Fetched movie details:", fetchedData);
-            callback(undefined, fetchedData)
+        .then((fetchedData) => {
+            console.log('Fetched movie details:', fetchedData);
+            callback(undefined, fetchedData);
         })
-        .catch(err => callback(err, undefined));
-}
+        .catch((err) => callback(err, undefined));
+};
 
 module.exports = categories;
 

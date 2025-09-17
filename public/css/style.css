@@ -83,7 +83,7 @@ h2:hover {
     flex-direction: column;
     align-items: center;
     width: min-content;
-    height: 24rem;
+    height: auto;
     flex: 1 0 auto;
     border-radius: 12px;
     overflow: hidden;
@@ -210,6 +210,7 @@ h2:hover {
 
 .movie-card:hover {
     filter: brightness(85%);
+    cursor: pointer;
 }
 
 .movie-card__img-container {
