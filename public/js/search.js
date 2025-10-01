@@ -5,10 +5,6 @@ moviesContainer.style.display = 'flex';
 moviesContainerTtl.textContent += `Search "${movieQuery}"`;
 moviesContainerMsg.textContent = 'Loading...';
 
-// 1. Get 'section' element which will house all movie cards
-// 2. For each movie object in the data, create a card
-// 3. In the card, render: movie image, title, description, etc. (tbd let me render these first)
-
 function updateControls() {
     pageInfo.textContent = `Page ${currentState.page} of ${currentState.totalPages}`;
     prevBtn.disabled = currentState.page <= 1;
@@ -24,7 +20,7 @@ const loadPage = (page = 1) => {
             populateMovieResults(result.movie_details, moviesContainer);
             updateControls();
 
-            const movieCards = document.querySelectorAll('.movie-card'); // couldn't do it with getElementsByClassName. Why?
+            const movieCards = document.querySelectorAll('.movie-card');
             console.log(movieCards);
             movieCards.forEach((e, idx) =>
                 handleClick(e, idx, result.movie_details)

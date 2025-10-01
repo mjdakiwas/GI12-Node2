@@ -23,21 +23,4 @@ const images = (callback) => {
         .catch((err) => callback(err, undefined));
 };
 
-// const config = (search, callback) => {
-//     images((error, img_base_url = '') => {
-//         if (error) return callback(error, undefined);
-
-//         movies(search, (error, details = {}) => {
-//             if (error) return callback(error, undefined);
-
-//             const movieDetails = details.map(e => {
-//                 const newE = Object.assign(e, { poster_path: `${img_base_url}${e.poster_path}` });
-//                 return newE;
-//             })
-
-//             callback(undefined, movieDetails);
-//         })
-//     });
-// }
-
 module.exports = images;

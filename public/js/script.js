@@ -21,10 +21,8 @@ const currentState = {
     totalPages: 1,
 };
 
-// import { join } from 'path'; // NOTE: can't use import statement outside a module
-
 homeBtn.addEventListener('click', () => {
-    window.location.href = '/'; // This will trigger the Express route
+    window.location.href = '/';
 });
 
 form.addEventListener('submit', (e) => {

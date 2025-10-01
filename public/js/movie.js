@@ -9,7 +9,6 @@ const movieRecommendation = document.getElementById(
     'movie-recommendation__container'
 );
 
-// getting only selected movie
 fetchData(movieTitle, currentState.page).then((result) => {
     const movieDetail = result.movie_details.filter((e) => e.id === movieID);
     const movie = movieDetail[0];
@@ -26,6 +25,4 @@ fetchData(movieTitle, currentState.page).then((result) => {
         <p class="movie-overview__overview">${movie.overview}</p>
         <p class="movie-overview__rating">${movie.rating.toFixed(1)}</p>
     </div>`;
-
-    // movieOverview.innerHTML += populateCard(movie);
 });
